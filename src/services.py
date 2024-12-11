@@ -1,11 +1,10 @@
 import requests
 import json
 from fastapi import HTTPException
-
-API_URL = "https://weather.cloufit.ru/api/v1/weather"
+from config import API_URL, FILE_REC
 
 def load_recommendations():
-    with open(r"C:UsersulianCloufitCloufitsrcweather-recs-result.json", 'r', encoding='utf-8') as f:
+    with open(FILE_REC, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def get_weather_and_recommendations(city: str, gender: str, age_group: str):
@@ -38,42 +37,46 @@ def get_weather_and_recommendations(city: str, gender: str, age_group: str):
         response.raise_for_status()
         weather_data = response.json()
     except requests.exceptions.HTTPError as http_err:
-        raise HTTPException(status_code=response.status_code, detail=str(http_err))
+        raise HTTPException(status_code=400, detail="Ошибка погодного сервера: " + str(http_err))
     except Exception as err:
         raise HTTPException(status_code=500, detail=str(err))
 
-    temperature = weather_data['list'][0]['main']['temp'] - 273.15  # Преобразование из Кельвинов в Цельсий
+    temperatures = [entry['main']['temp'] - 273.15 for entry in weather_data['list']]
+    weather_conditions = [entry['weather'][0]['main'] for entry in weather_data['list'] if entry['weather']]
 
-    # Извлечение типа погоды
-    weather_conditions = weather_data['list'][0]['weather']
-    precipitation = weather_conditions[0]['main'] if weather_conditions else "неизвестно"
+    precipitation_found = any(cond in ["Thunderstorm", "Drizzle", "Rain", "Snow"] for cond in weather_conditions)
 
-    recommendations = find_recommendations(gender, age_group, temperature, precipitation)
+    precipitation_category = None
+    if precipitation_found:
+        if any(cond in ["Rain", "Drizzle"] for cond in weather_conditions):
+            precipitation_category = "rain"
+        elif any(cond == "Snow" for cond in weather_conditions):
+            precipitation_category = "snow"
+
+    recommendations = find_recommendations(gender, age_group, temperatures, precipitation_category)
 
     return {
         "weather": weather_data,
         "recommendations": recommendations
     }
 
-def find_recommendations(gender: str, age_group: str, temperature: float, precipitation: str):
+
+def find_recommendations(gender: str, age_group: str, temperatures: list, precipitation_category: str):
     recommendations_data = load_recommendations()
 
-    if precipitation in ["Thunderstorm", "Drizzle", "Rain"]:
-        precipitation_category = "rain"
-    elif precipitation == "Snow":
-        precipitation_category = "snow"
-    else:
+    if precipitation_category is None:
         precipitation_category = "any"
 
     for rec in recommendations_data['recommendations']:
         if rec['gender'] == gender and rec['age_group'] == age_group:
             for weather_condition in rec['weather_precipitation']:
-                if weather_condition['temperature_range'][0] <= temperature <= weather_condition['temperature_range'][1]:
-                    if weather_condition['precipitation'] == precipitation_category or weather_condition['precipitation'] == "any":
-                        return weather_condition['recommendation']
+                for temperature in temperatures:
+                    if weather_condition['temperature_range'][0] <= temperature <= \
+                            weather_condition['temperature_range'][1]:
+                        if weather_condition['precipitation'] == precipitation_category:
+                            return weather_condition['recommendation']
 
     return "Нет рекомендаций для данных условий."
-
 
 
 

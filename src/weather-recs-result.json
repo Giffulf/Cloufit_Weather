@@ -62,6 +62,14 @@
                 },
                 {
                     "temperature_range": [
+                        -10,
+                        0
+                    ],
+                    "precipitation": "any",
+                    "recommendation": "Не выходить на улицу. Опасно для здоровья."
+                },
+                {
+                    "temperature_range": [
                         0,
                         5
                     ],
@@ -73,8 +81,17 @@
                         0,
                         5
                     ],
+
                     "precipitation": "rain",
                     "recommendation": "Прохладно, дождь. Куртка с водоотталкивающей мембраной, водонепроницаемые сапоги, шапка, шарф и перчатки."
+                },
+                {
+                    "temperature_range": [
+                        0,
+                        5
+                    ],
+                    "precipitation": "any",
+                    "recommendation": "Не выходить на улицу. Опасно для здоровья."
                 },
                 {
                     "temperature_range": [
