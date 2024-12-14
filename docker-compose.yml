@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  web:
+    container_name: cloufit_api
+    image: cloufit_api
+    build: .
+    env_file:
+      - .env
+    networks:
+      - weather_rec
+
+# need create network with "docker network create weather_rec" command
+networks:
+  weather_rec:
+    external: true
