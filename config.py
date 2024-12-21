@@ -5,4 +5,6 @@ load_dotenv()
 
 API_URL = os.getenv("API_URL")
 API_KEY_GPT = os.getenv("API_KEY_GPT")
-FILE_REC = os.getenv("FILE_REC")
+FILE_REC = os.path.join(os.path.curdir, "src", "weather-recs-result.json")
+
+print(FILE_REC)

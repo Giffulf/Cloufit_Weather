@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+
 class WeatherRequest(BaseModel):
     city: str
     gender: str
@@ -13,6 +14,7 @@ class WeatherCondition(BaseModel):
     description: str
     icon: str
 
+
 class MainData(BaseModel):
     temp: float
     feels_like: float
@@ -24,13 +26,16 @@ class MainData(BaseModel):
     humidity: int
     temp_kf: float
 
+
 class CloudData(BaseModel):
     all: int
+
 
 class WindData(BaseModel):
     speed: float
     deg: int
     gust: Optional[float] = None
+
 
 class WeatherEntry(BaseModel):
     dt: int
@@ -43,9 +48,11 @@ class WeatherEntry(BaseModel):
     sys: dict
     dt_txt: str
 
+
 class CityCoord(BaseModel):
     lat: float
     lon: float
+
 
 class CityData(BaseModel):
     id: int
@@ -57,7 +64,12 @@ class CityData(BaseModel):
     sunrise: int
     sunset: int
 
+
 class WeatherResponse(BaseModel):
     list: List[WeatherEntry]
     city: CityData
+
+
+class WeatherRecResponse(BaseModel):
+    weather: WeatherResponse
     recommendations: str
