@@ -43,7 +43,7 @@ class WeatherEntry(BaseModel):
     weather: List[WeatherCondition]
     clouds: CloudData
     wind: WindData
-    visibility: int
+    visibility: int | None = None
     pop: float
     sys: dict
     dt_txt: str

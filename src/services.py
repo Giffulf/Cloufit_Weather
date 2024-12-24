@@ -1,6 +1,8 @@
 import requests
 import json
 from fastapi import HTTPException
+from starlette import status
+
 from config import API_URL, FILE_REC
 
 
@@ -10,9 +12,9 @@ def load_recommendations():
 
 
 def get_weather_and_recommendations(city: str, gender: str, age_group: str):
-    if gender == "женский":
+    if gender.lower() == "женский":
         gender = "female"
-    elif gender == "мужской":
+    elif gender.lower() == "мужской":
         gender = "male"
     else:
         raise HTTPException(status_code=400, detail="Некорректный пол.")
@@ -35,7 +37,8 @@ def get_weather_and_recommendations(city: str, gender: str, age_group: str):
 
     try:
         response = requests.get(f"{API_URL}/{city}")
-        response.raise_for_status()
+        if not 200 <= response.status_code < 300:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Погодный сервис не дал корректный ответ")
         weather_data = response.json()
     except requests.exceptions.HTTPError as http_err:
         raise HTTPException(status_code=400, detail="Ошибка погодного сервера")
