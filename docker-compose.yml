@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /src/feedback_data.json:/app/src/feedback_data.json
+      - ./src/feedback_data.json:/app/src/feedback_data.json
     networks:
       - weather_rec
 
