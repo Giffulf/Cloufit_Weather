@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
 
@@ -73,3 +73,15 @@ class WeatherResponse(BaseModel):
 class WeatherRecResponse(BaseModel):
     weather: WeatherResponse
     recommendations: str
+
+
+class FeedbackRequest(BaseModel):
+    email: EmailStr
+    text: str
+
+
+# Модель для хранения данных в JSON
+class FeedbackEntry(BaseModel):
+    id: str
+    email: EmailStr
+    text: str

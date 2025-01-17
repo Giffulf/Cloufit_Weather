@@ -1,9 +1,13 @@
+import asyncio
+import os
+
 import requests
 import json
 from fastapi import HTTPException
 from starlette import status
 
-from config import API_URL, FILE_REC
+from config import API_URL, FILE_REC, FEEDBACK_FILE
+from src.shemas import FeedbackEntry
 
 
 def load_recommendations():
@@ -84,3 +88,40 @@ def find_recommendations(gender: str, age_group: str, temperatures: list, precip
                         return weather_condition['recommendation']
 
     return "Нет рекомендаций для данных условий."
+
+
+def load_feedback_data() -> list[FeedbackEntry]:
+    if not os.path.exists(FEEDBACK_FILE):
+        return []
+    try:
+        with open(FEEDBACK_FILE, "r", encoding="utf-8") as file:
+            content = file.read()
+            if not content.strip():
+                return []
+            return json.loads(content)
+    except json.JSONDecodeError:
+        return []
+
+
+def save_feedback_data(data: list[FeedbackEntry]):
+    with open(FEEDBACK_FILE, "w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=4)
+
+
+write_queue = asyncio.Queue()
+
+
+# Воркер для обработки задач из очереди
+async def write_worker():
+    while True:
+        task = await write_queue.get()
+        try:
+            feedback_data = load_feedback_data()
+
+            feedback_data.append(task)
+
+            save_feedback_data(feedback_data)
+        except Exception as e:
+            print(f"Ошибка при записи в файл: {e}")
+        finally:
+            write_queue.task_done()
