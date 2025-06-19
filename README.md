@@ -6,7 +6,6 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![OpenWeather](https://img.shields.io/badge/OpenWeather-API-green)](https://openweathermap.org)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## 📌 О проекте  
 
@@ -25,7 +24,7 @@ Cloufit — веб-приложение, которое:
 
 ### 1. Установка  
 
-bash
+```
 # Клонировать репозиторий
 git clone https://github.com/Giffulf/Cloufit_Weather.git
 cd Cloufit_Weather
@@ -36,18 +35,20 @@ python -m venv .venv
 
 # Установить зависимости
 pip install -r requirements.txt
+```
 
 ### 2. Настройка  
 1. Получите API-ключ на [OpenWeatherMap](https://openweathermap.org/api)  
 2. Создайте файл `.env` в корне проекта:  
-   
+```
 ini
    OPENWEATHER_API_KEY=ваш_ключ
-  
+```
 
 ### 3. Запуск  
-bash
+```
 fastapi dev main.py
+```
 Откройте [http://localhost:8000](http://localhost:8000)  
 
 ## 🛠 Технологии  
