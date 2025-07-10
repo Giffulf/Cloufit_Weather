@@ -1,7 +1,7 @@
 # Cloufit Weather 🌦️👔  
 
 **Умный гид по выбору одежды по погоде**  
-*Разработан в рамках учебного проекта в [Название ВУЗа]*
+*Разработан в рамках учебного проекта в МИИГАиК*
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi)](https://fastapi.tiangolo.com/)
